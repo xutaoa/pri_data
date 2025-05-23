@@ -177,7 +177,7 @@
         <h1>Excel文件处理</h1>
         
         <div class="file-section">
-            <h3>德众堂</h3>
+            <h3>文件 1</h3>
             <div class="file-input">
                 <input type="file" id="file1" accept=".xlsx, .xls" />
                 <button class="upload-btn" id="uploadBtn1" onclick="uploadFile(1)">上传</button>
@@ -187,7 +187,7 @@
         </div>
         
         <div class="file-section">
-            <h3>轩济堂</h3>
+            <h3>文件 2</h3>
             <div class="file-input">
                 <input type="file" id="file2" accept=".xlsx, .xls" />
                 <button class="upload-btn" id="uploadBtn2" onclick="uploadFile(2)">上传</button>
@@ -197,7 +197,7 @@
         </div>
         
         <div class="file-section">
-            <h3>宁合</h3>
+            <h3>文件 3</h3>
             <div class="file-input">
                 <input type="file" id="file3" accept=".xlsx, .xls" />
                 <button class="upload-btn" id="uploadBtn3" onclick="uploadFile(3)">上传</button>
@@ -280,7 +280,11 @@
                 content = processedFiles.join('\n\n') + '\n\n等待其他文件上传...';
             } else {
                 // 所有文件都已处理，按顺序拼接
-                content = '拼接结果:\n\n' + results.file1 + results.file2 + results.file3;
+                content = '所有文件处理完成:\n\n' + 
+                          '文件1: ' + results.file1 + '\n\n' +
+                          '文件2: ' + results.file2 + '\n\n' +
+                          '文件3: ' + results.file3 + '\n\n' +
+                          '拼接结果:\n\n' + results.file1 + results.file2 + results.file3;
             }
             
             previewBox.textContent = content;
