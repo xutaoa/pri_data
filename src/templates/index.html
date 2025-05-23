@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel文件处理</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.8rem;
+        }
+        
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .file-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        
+        .file-section h3 {
+            margin-top: 0;
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+        
+        .file-input {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .file-input input[type="file"] {
+            width: 100%;
+            padding: 8px 0;
+        }
+        
+        .preview-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        
+        .preview-box {
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .status {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .upload-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+        }
+        
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .upload-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式布局 */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin: 20px 0;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            .file-input {
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            
+            .file-input input[type="file"] {
+                width: auto;
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .upload-btn {
+                width: auto;
+            }
+        }
+        
+        /* 触摸设备优化 */
+        @media (hover: none) {
+            .upload-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            input[type="file"] {
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Excel文件处理</h1>
+        
+        <div class="file-section">
+            <h3>德众堂</h3>
+            <div class="file-input">
+                <input type="file" id="file1" accept=".xlsx, .xls" />
+                <button class="upload-btn" id="uploadBtn1" onclick="uploadFile(1)">上传</button>
+                <span id="loading1" style="display:none;"><span class="loading"></span></span>
+            </div>
+            <div class="status" id="status1">未上传</div>
+        </div>
+        
+        <div class="file-section">
+            <h3>轩济堂</h3>
+            <div class="file-input">
+                <input type="file" id="file2" accept=".xlsx, .xls" />
+                <button class="upload-btn" id="uploadBtn2" onclick="uploadFile(2)">上传</button>
+                <span id="loading2" style="display:none;"><span class="loading"></span></span>
+            </div>
+            <div class="status" id="status2">未上传</div>
+        </div>
+        
+        <div class="file-section">
+            <h3>宁合</h3>
+            <div class="file-input">
+                <input type="file" id="file3" accept=".xlsx, .xls" />
+                <button class="upload-btn" id="uploadBtn3" onclick="uploadFile(3)">上传</button>
+                <span id="loading3" style="display:none;"><span class="loading"></span></span>
+            </div>
+            <div class="status" id="status3">未上传</div>
+        </div>
+        
+        <div class="preview-section">
+            <h3>预览结果</h3>
+            <div class="preview-box" id="previewBox">等待文件上传...</div>
+        </div>
+    </div>
+
+    <script>
+        // 存储每个文件的处理结果
+        const results = {
+            file1: null,
+            file2: null,
+            file3: null
+        };
+
+        // 上传文件并处理
+        function uploadFile(fileNum) {
+            const fileInput = document.getElementById(`file${fileNum}`);
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('请先选择文件');
+                return;
+            }
+            
+            // 显示加载状态
+            document.getElementById(`loading${fileNum}`).style.display = 'inline-block';
+            document.getElementById(`uploadBtn${fileNum}`).disabled = true;
+            document.getElementById(`status${fileNum}`).textContent = '处理中...';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('fileNum', fileNum);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 更新状态
+                document.getElementById(`status${fileNum}`).textContent = '已处理';
+                document.getElementById(`loading${fileNum}`).style.display = 'none';
+                
+                // 存储结果
+                results[`file${fileNum}`] = data.result;
+                
+                // 更新预览
+                updatePreview();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById(`status${fileNum}`).textContent = '处理失败';
+                document.getElementById(`loading${fileNum}`).style.display = 'none';
+                document.getElementById(`uploadBtn${fileNum}`).disabled = false;
+            });
+        }
+        
+        // 更新预览框
+        function updatePreview() {
+            const previewBox = document.getElementById('previewBox');
+            let content = '';
+            
+            // 检查哪些文件已处理
+            const processedFiles = [];
+            if (results.file1) processedFiles.push('文件1: ' + results.file1);
+            if (results.file2) processedFiles.push('文件2: ' + results.file2);
+            if (results.file3) processedFiles.push('文件3: ' + results.file3);
+            
+            if (processedFiles.length === 0) {
+                content = '等待文件上传...';
+            } else if (processedFiles.length < 3) {
+                content = processedFiles.join('\n\n') + '\n\n等待其他文件上传...';
+            } else {
+                // 所有文件都已处理，按顺序拼接
+                content = '拼接结果:\n\n' + results.file1 + results.file2 + results.file3;
+            }
+            
+            previewBox.textContent = content;
+        }
+        
+        // 添加触摸设备检测
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检测是否为触摸设备
+            const isTouchDevice = 'ontouchstart' in window || 
+                                  navigator.maxTouchPoints > 0 ||
+                                  navigator.msMaxTouchPoints > 0;
+            
+            if (isTouchDevice) {
+                document.body.classList.add('touch-device');
+            }
+        });
+    </script>
+</body>
+</html>
