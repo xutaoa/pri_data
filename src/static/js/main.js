@@ -171,6 +171,9 @@ function updatePreview() {
             allAnalyzed = false;
             break;
         }
+        if (i === 2){
+            continue
+        }
         combinedText += `${analysisResults[`file${i}`].result}\n\n`;
     }
     
@@ -215,4 +218,51 @@ function copyAllResults() {
             .then(() => alert('已复制所有结果到剪贴板'))
             .catch(err => console.error('无法复制文本: ', err));
     }
+
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // 显示Sheet选择器
+            const sheetSelector = document.getElementById(`sheetSelector${fileNumber}`);
+            sheetSelector.classList.remove('d-none');
+            
+            // 填充Sheet选项
+            const sheetSelect = document.getElementById(`sheetSelect${fileNumber}`);
+            sheetSelect.innerHTML = '<option value="">选择Sheet</option>';
+            data.sheets.forEach(sheet => {
+                const option = document.createElement('option');
+                option.value = sheet;
+                option.textContent = sheet;
+                sheetSelect.appendChild(option);
+            });
+            
+            // 更新按钮状态
+            uploadBox.querySelector('button').textContent = '上传成功';
+            uploadBox.querySelector('button').classList.remove('btn-primary');
+            uploadBox.querySelector('button').classList.add('btn-success');
+            
+            // 存储文件名
+            analysisResults[`file${fileNumber}`] = {
+                filename: data.filename,
+                sheet: null,
+                result: null
+            };
+        } else {
+            alert(`上传失败: ${data.error}`);
+            uploadBox.querySelector('button').textContent = `上传文件${fileNumber}`;
+            uploadBox.querySelector('button').disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('上传过程中发生错误');
+        uploadBox.querySelector('button').textContent = `上传文件${fileNumber}`;
+        uploadBox.querySelector('button').disabled = false;
+    });
+
 }
