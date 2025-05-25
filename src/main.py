@@ -75,7 +75,7 @@ def analyze_data():
         # df = pd.read_excel(filepath, sheet_name=sheet_name)
         
         if file_num == 1:
-            text_result = fun_1(filepath, sheet_name, tomorrow_date)
+            text_result = fun_1(filepath, sheet_name, tomorrow_date, w)
         elif file_num == 2:
             text_result = fun_2(filepath, sheet_name, tomorrow_date)
         else:
@@ -99,7 +99,7 @@ def get_text(df, start, end, row):
         return ""
     return text 
 
-def fun_1(filepath, sheet_name, tomorrow_date):
+def fun_1(filepath, sheet_name, tomorrow_date, week_day):
     text = ""
     text += tomorrow_date + '\n'
     text += '【德众堂】宝山区新沪路1073号\n'
@@ -119,16 +119,26 @@ def fun_1(filepath, sheet_name, tomorrow_date):
     for i in range(1, 4):  
         text += get_text(df, 17, 34, i)
 
-    text += '\n下午\n'
+    text += '\n下午'
     #下午数据
     for i in range(5, 8):  
         text += get_text(df, 17, 34, i)
 
     for i in range(9, 12):  
-        text += get_text(df, 17, 34, i)
+        text += get_text(df, 17, 31, i)
 
     for i in range(1, 4):  
-        text += get_text(df, 34, 52, i)        
+        text += get_text(df, 34, 51, i)        
+
+    # week_day = "星期二"
+    if week_day == "星期二":
+        #夜班数据
+        text += '\n晚'
+        for i in range(1, 4):  
+            text += get_text(df, 51, 72, i)
+
+        for i in range(5, 8):  
+            text += get_text(df, 51, 72, i)
 
     return text
 
@@ -153,7 +163,7 @@ def fun_2(filepath, sheet_name, tomorrow_date):
     for i in range(3, 6):  
         text += get_text(df, 7, 14, i)
 
-    text += '\n下午\n'
+    text += '\n下午'
     #下午数据
     for i in range(0, 3):  
         text += get_text(df, 14, 21, i)
@@ -187,7 +197,7 @@ def fun_3(filepath, sheet_name, tomorrow_date):
     for i in range(1, 4):  
         text += get_text(df, 12, 24, i)
 
-    text += '\n下午\n'
+    text += '\n下午'
     #下午数据
     for i in range(5, 8):  
         text += get_text(df, 12, 24, i)
