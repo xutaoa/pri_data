@@ -107,38 +107,38 @@ def fun_1(filepath, sheet_name, tomorrow_date, week_day):
     
     text += '上午'
     #上午数据
-    for i in range(1, 4):  
+    for i in range(1, 5):  
         text += get_text(df, 0, 17, i)
 
-    for i in range(5, 8):  
+    for i in range(6, 10):  
         text += get_text(df, 0, 17, i)
 
-    for i in range(9, 12):  
+    for i in range(11, 15):  
         text += get_text(df, 0, 17, i)
     
-    for i in range(1, 4):  
+    for i in range(1, 5):  
         text += get_text(df, 17, 34, i)
 
     text += '\n下午'
     #下午数据
-    for i in range(5, 8):  
+    for i in range(6, 10):  
         text += get_text(df, 17, 34, i)
 
-    for i in range(9, 12):  
-        text += get_text(df, 17, 31, i)
+    for i in range(11, 15):  
+        text += get_text(df, 17, 34, i)
 
-    for i in range(1, 4):  
-        text += get_text(df, 34, 51, i)        
+    for i in range(1, 5):  
+        text += get_text(df, 34, 49, i)        
 
     # week_day = "星期二"
     if week_day == "星期二":
         #夜班数据
         text += '\n晚'
-        for i in range(1, 4):  
-            text += get_text(df, 51, 72, i)
+        for i in range(1, 5):  
+            text += get_text(df, 49, 72, i)
 
-        for i in range(5, 8):  
-            text += get_text(df, 51, 72, i)
+        for i in range(6, 10):  
+            text += get_text(df, 49, 72, i)
 
     return text
 
