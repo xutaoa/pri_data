@@ -186,27 +186,27 @@ def fun_3(filepath, sheet_name, tomorrow_date):
     text += '上午'
     #上午数据
     for i in range(1, 4):  
-        text += get_text(df, 0, 12, i)
+        text += get_text(df, 0, 14, i)
 
     for i in range(5, 8):  
-        text += get_text(df, 0, 12, i)
+        text += get_text(df, 0, 14, i)
 
     for i in range(9, 12):  
-        text += get_text(df, 0, 12, i)
+        text += get_text(df, 0, 14, i)
     
     for i in range(1, 4):  
-        text += get_text(df, 12, 24, i)
+        text += get_text(df, 14, 28, i)
 
     text += '\n下午'
     #下午数据
     for i in range(5, 8):  
-        text += get_text(df, 12, 24, i)
+        text += get_text(df, 14, 28, i)
 
     for i in range(9, 12):  
-        text += get_text(df, 12, 24, i)
+        text += get_text(df, 14, 28, i)
 
     for i in range(1, 4):  
-        text += get_text(df, 24, 48, i)        
+        text += get_text(df, 28, 42, i)        
 
     return text
 
