@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from werkzeug.utils import secure_filename
 import datetime
+import traceback
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -89,126 +90,146 @@ def analyze_data():
         return jsonify({'error': str(e)}), 500
 
 def get_text(df, start, end, row):
-    subset = df.iloc[start:end, row]
     text = "\n"
-    for index, value in subset.items():
-        if str(value) != 'nan':
-            text += str(value).replace('借', '') + "\n"
-    
-    if len(text) < 10:
-        return ""
-    return text 
+    try:
+        subset = df.iloc[start:end, row]
+        for index, value in subset.items():
+            if str(value) != 'nan':
+                text += str(value).replace('借', '') + "\n"
+        
+        if len(text) < 10:
+            return ""
+        return text 
+    except IndexError as e:
+        print(e)  # 输出错误信息
+        return text 
+
 
 def fun_1(filepath, sheet_name, tomorrow_date, week_day):
-    text = ""
-    text += tomorrow_date + '\n'
-    text += '【德众堂】宝山区新沪路1073号\n'
-    df = pd.read_excel(filepath, sheet_name=sheet_name, skiprows=[0])
-    
-    text += '上午'
-    #上午数据
-    for i in range(1, 5):  
-        text += get_text(df, 0, 17, i)
-
-    for i in range(6, 10):  
-        text += get_text(df, 0, 17, i)
-
-    for i in range(11, 15):  
-        text += get_text(df, 0, 17, i)
-    
-    for i in range(1, 5):  
-        text += get_text(df, 17, 34, i)
-
-    text += '\n下午'
-    #下午数据
-    for i in range(6, 10):  
-        text += get_text(df, 17, 34, i)
-
-    for i in range(11, 15):  
-        text += get_text(df, 17, 34, i)
-
-    for i in range(1, 5):  
-        text += get_text(df, 34, 49, i)        
-
-    # week_day = "星期二"
-    if week_day == "星期二":
-        #夜班数据
-        text += '\n晚'
+    try:
+        text = ""
+        text += tomorrow_date + '\n'
+        text += '【德众堂】宝山区新沪路1073号\n'
+        df = pd.read_excel(filepath, sheet_name=sheet_name, skiprows=[0])
+        
+        text += '上午'
+        #上午数据
         for i in range(1, 5):  
-            text += get_text(df, 49, 72, i)
+            text += get_text(df, 0, 17, i)
 
         for i in range(6, 10):  
-            text += get_text(df, 49, 72, i)
+            text += get_text(df, 0, 17, i)
 
-    return text
+        for i in range(11, 15):  
+            text += get_text(df, 0, 17, i)
+        
+        for i in range(1, 5):  
+            text += get_text(df, 17, 34, i)
+
+        text += '\n下午'
+        #下午数据
+        for i in range(6, 10):  
+            text += get_text(df, 17, 34, i)
+
+        for i in range(11, 15):  
+            text += get_text(df, 17, 34, i)
+
+        for i in range(1, 5):  
+            text += get_text(df, 34, 49, i)        
+
+        # week_day = "星期二"
+        if week_day == "星期二":
+            #夜班数据
+            text += '\n晚'
+            for i in range(1, 5):  
+                text += get_text(df, 49, 72, i)
+
+            for i in range(6, 10):  
+                text += get_text(df, 49, 72, i)
+
+        return text
+    except Exception as e:
+        print(f"fun_1 error: {e}")
+        traceback.print_exc()
+        return ""
 
 def fun_2(filepath, sheet_name, tomorrow_date):
-    text = ""
-    text += tomorrow_date + '\n'
-    text += '【轩济堂】顾村镇菊泉街675号4幢2楼\n' 
+    try:
+        text = ""
+        text += tomorrow_date + '\n'
+        text += '【轩济堂】顾村镇菊泉街675号4幢2楼\n' 
 
-    df = pd.read_excel(filepath, sheet_name=sheet_name, skiprows=[0])
-    
-    text += '上午'
-    #上午数据
-    for i in range(0, 3):  
-        text += get_text(df, 0, 7, i)
+        df = pd.read_excel(filepath, sheet_name=sheet_name, skiprows=[0])
+        
+        text += '上午'
+        #上午数据
+        for i in range(0, 3):  
+            text += get_text(df, 0, 7, i)
 
-    for i in range(3, 6):  
-        text += get_text(df, 0, 7, i)
+        for i in range(3, 6):  
+            text += get_text(df, 0, 7, i)
 
-    for i in range(0, 3):  
-        text += get_text(df, 7, 14, i)
-    
-    for i in range(3, 6):  
-        text += get_text(df, 7, 14, i)
+        for i in range(0, 3):  
+            text += get_text(df, 7, 14, i)
+        
+        for i in range(3, 6):  
+            text += get_text(df, 7, 14, i)
 
-    text += '\n下午'
-    #下午数据
-    for i in range(0, 3):  
-        text += get_text(df, 14, 21, i)
+        text += '\n下午'
+        #下午数据
+        for i in range(0, 3):  
+            text += get_text(df, 14, 21, i)
 
-    for i in range(3, 6):  
-        text += get_text(df, 14, 21, i)
+        for i in range(3, 6):  
+            text += get_text(df, 14, 21, i)
 
-    for i in range(0, 3):  
-        text += get_text(df, 21, 28, i)        
+        for i in range(0, 3):  
+            text += get_text(df, 21, 28, i)        
 
-    return text
+        return text
+    except Exception as e:
+        print(f"fun_2 error: {e}")
+        traceback.print_exc()
+        return ""
 
 def fun_3(filepath, sheet_name, tomorrow_date):
-    text = ""
-    text += tomorrow_date + '\n'
-    text += '【宁合中医】灵石路健康智谷7号楼2楼\n' 
+    try:
+        text = ""
+        text += tomorrow_date + '\n'
+        text += '【宁合中医】灵石路健康智谷7号楼2楼\n' 
 
-    df = pd.read_excel(filepath, sheet_name=sheet_name)
+        df = pd.read_excel(filepath, sheet_name=sheet_name)
 
-    text += '上午'
-    #上午数据
-    for i in range(1, 4):  
-        text += get_text(df, 0, 14, i)
+        text += '上午'
+        #上午数据
+        for i in range(1, 4):  
+            text += get_text(df, 0, 14, i)
 
-    for i in range(5, 8):  
-        text += get_text(df, 0, 14, i)
+        for i in range(5, 8):  
+            text += get_text(df, 0, 14, i)
 
-    for i in range(9, 12):  
-        text += get_text(df, 0, 14, i)
-    
-    for i in range(1, 4):  
-        text += get_text(df, 14, 28, i)
+        for i in range(9, 12):  
+            text += get_text(df, 0, 14, i)
+        
+        for i in range(1, 4):  
+            text += get_text(df, 14, 28, i)
 
-    text += '\n下午'
-    #下午数据
-    for i in range(5, 8):  
-        text += get_text(df, 14, 28, i)
+        text += '\n下午'
+        #下午数据
+        for i in range(5, 8):  
+            text += get_text(df, 14, 28, i)
 
-    for i in range(9, 12):  
-        text += get_text(df, 14, 28, i)
+        for i in range(9, 12):  
+            text += get_text(df, 14, 28, i)
 
-    for i in range(1, 4):  
-        text += get_text(df, 28, 42, i)        
+        for i in range(1, 4):  
+            text += get_text(df, 28, 42, i)        
 
-    return text
+        return text
+    except Exception as e:
+        print(f"fun_3 error: {e}")
+        traceback.print_exc()
+        return ""
 
 @app.route('/')
 def index():
