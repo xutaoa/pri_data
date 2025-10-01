@@ -12,6 +12,53 @@
         
         <h1 class="text-center mb-4"><i class="bi bi-arrow-through-heart"></i> 为宝宝量身定制</h1>
         
+        <!-- 德众堂配置按钮 -->
+        <div class="mb-3">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#dezhongtangConfigModal">
+                德众堂配置
+            </button>
+        </div>
+        
+        <!-- 德众堂配置模态框 -->
+        <div class="modal fade" id="dezhongtangConfigModal" tabindex="-1" aria-labelledby="dezhongtangConfigModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="dezhongtangConfigModalLabel">德众堂配置</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startColumn" class="form-label">起始列</label>
+                                    <input type="number" class="form-control" id="startColumn" value="1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="columnStep" class="form-label">列步长</label>
+                                    <input type="number" class="form-control" id="columnStep" value="4">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startRow" class="form-label">起始行</label>
+                                    <input type="number" class="form-control" id="startRow" value="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="rowStep" class="form-label">行步长</label>
+                                    <input type="number" class="form-control" id="rowStep" value="14">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="saveDezhongtangConfig()">保存配置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="row">
             <!-- 文件上传区域 -->
             <div class="col-md-8">

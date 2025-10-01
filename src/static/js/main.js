@@ -5,6 +5,14 @@ let analysisResults = {
     file3: null
 };
 
+// 德众堂配置
+let dezhongtangConfig = {
+    startColumn: 1,
+    columnStep: 4,
+    startRow: 0,
+    rowStep: 14
+};
+
 // 初始化文件上传事件
 document.addEventListener('DOMContentLoaded', function() {
     // 为三个文件输入框添加事件监听
@@ -14,7 +22,62 @@ document.addEventListener('DOMContentLoaded', function() {
             handleFileUpload(e, i);
         });
     }
+    
+    // 加载保存的配置
+    loadDezhongtangConfig();
 });
+
+// 加载德众堂配置
+function loadDezhongtangConfig() {
+    fetch('/get-dezhongtang-config')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                dezhongtangConfig = data.config;
+                // 更新UI中的配置值
+                document.getElementById('startColumn').value = dezhongtangConfig.startColumn;
+                document.getElementById('columnStep').value = dezhongtangConfig.columnStep;
+                document.getElementById('startRow').value = dezhongtangConfig.startRow;
+                document.getElementById('rowStep').value = dezhongtangConfig.rowStep;
+            }
+        })
+        .catch(error => {
+            console.error('加载配置失败:', error);
+        });
+}
+
+// 保存德众堂配置
+function saveDezhongtangConfig() {
+    // 从输入框获取值
+    dezhongtangConfig.startColumn = parseInt(document.getElementById('startColumn').value) || 1;
+    dezhongtangConfig.columnStep = parseInt(document.getElementById('columnStep').value) || 4;
+    dezhongtangConfig.startRow = parseInt(document.getElementById('startRow').value) || 0;
+    dezhongtangConfig.rowStep = parseInt(document.getElementById('rowStep').value) || 14;
+    
+    // 保存到服务器
+    fetch('/save-dezhongtang-config', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dezhongtangConfig)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('配置保存成功');
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('dezhongtangConfigModal'));
+            modal.hide();
+        } else {
+            alert('配置保存失败: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('保存配置失败:', error);
+        alert('配置保存失败');
+    });
+}
 
 // 处理文件上传
 function handleFileUpload(event, fileNumber) {
@@ -87,17 +150,25 @@ function analyze(fileNumber) {
     // 更新全局变量
     analysisResults[`file${fileNumber}`].sheet = selectedSheet;
     
+    // 准备请求数据
+    let requestData = {
+        filename: analysisResults[`file${fileNumber}`].filename,
+        sheet_name: selectedSheet,
+        file_num: fileNumber
+    };
+    
+    // 如果是德众堂文件，添加配置参数
+    if (fileNumber === 1) {
+        requestData.dezhongtang_config = dezhongtangConfig;
+    }
+    
     // 发送分析请求
     fetch('/analyze', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            filename: analysisResults[`file${fileNumber}`].filename,
-            sheet_name: selectedSheet,
-            file_num: fileNumber
-        })
+        body: JSON.stringify(requestData)
     })
     .then(response => response.json())
     .then(data => {
